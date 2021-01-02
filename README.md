@@ -36,13 +36,13 @@ To contribute make sure to write tests and keep the actual librarie's code in th
     parser.addArgument("-long-name", argcc::ARGPARSE_STRING, 1, "-short");
 ```
 
-## Parse
+### Parse
 
 ```c++
     auto parsed = parser.parse(argc, argv);
 ```
 
-## Access
+### Access
 ```c++
     auto isPresent = parsed.containsAny("-long-name");
 
