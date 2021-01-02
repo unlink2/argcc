@@ -58,6 +58,7 @@ void test_argcc(void **state) {
         assert_int_equal(intSet, 2);
         assert_int_equal(a.toInt("int"), 123);
         assert_int_equal(a.toInt("int", 1), 456);
+        assert_int_equal(a.toInt("int", 2, 64), 64);
 
         auto floatSet = a.getSize("float");
         assert_int_equal(floatSet, 2);

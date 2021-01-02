@@ -109,19 +109,19 @@ namespace argcc {
             /**
              * Attempts to find and cast value at index in set
              */
-            std::string toString(std::string name, int index=0, std::string defaultValue="") {
+            std::string toString(std::string name, unsigned long index=0, std::string defaultValue="") {
                 return toGeneric<std::string>(name, defaultValue, index);
             }
 
-            bool toBool(std::string name, int index=0, bool defaultValue=false) {
+            bool toBool(std::string name, unsigned long index=0, bool defaultValue=false) {
                 return toGeneric<bool>(name, defaultValue, index);
             }
 
-            int toInt(std::string name, int index=0, int defaultValue=0) {
+            int toInt(std::string name, unsigned long index=0, int defaultValue=0) {
                 return toGeneric<int>(name, defaultValue, index);
             }
 
-            float toFloat(std::string name, int index=0, float defaultValue=0.0f) {
+            float toFloat(std::string name, unsigned long index=0, float defaultValue=0.0f) {
                 return toGeneric<float>(name, defaultValue, index);
             }
 
@@ -148,12 +148,15 @@ namespace argcc {
             }
 
             template<typename T>
-            T toGeneric(std::string name, T defaultValue, int index=0) {
+            T toGeneric(std::string name, T defaultValue, unsigned long index=0) {
                 auto iter = values.find(name);
                 if (iter == values.end()) {
                     throw ArgparseInvalidArgument(name);
                 }
                 try {
+                    if (iter->second.size() <= index) {
+                        return defaultValue;
+                    }
                     return std::any_cast<T>(iter->second.at(index));
                 } catch (std::bad_any_cast &e) {
                     throw ArgparseTypeException();
@@ -311,7 +314,7 @@ namespace argcc {
             }
 
             bool isAtEnd() {
-                return index >= argc;
+                return index >= (unsigned long)argc;
             }
 
             std::string getHelpText() {
@@ -412,7 +415,7 @@ namespace argcc {
             // those are set when parse is called
             char **argv;
             int argc;
-            int index;
+            unsigned long index;
             std::ostream &out;
 
             std::string description;
