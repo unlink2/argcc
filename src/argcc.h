@@ -106,8 +106,12 @@ namespace argcc {
                 return 0;
             }
 
-            std::vector<std::any>::iterator getValueIterator(std::string name) {
+            std::vector<std::any>::iterator getValueBegin(std::string name) {
                 return values.find(name)->second.begin();
+            }
+
+            std::vector<std::any>::iterator getValueEnd(std::string name) {
+                return values.find(name)->second.end();
             }
 
             /**
