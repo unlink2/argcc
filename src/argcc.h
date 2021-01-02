@@ -106,6 +106,10 @@ namespace argcc {
                 return 0;
             }
 
+            std::vector<std::any>::iterator getValueIterator(std::string name) {
+                return values.find(name)->second.begin();
+            }
+
             /**
              * Attempts to find and cast value at index in set
              */
