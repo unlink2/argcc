@@ -70,6 +70,16 @@ namespace argcc {
             std::string text;
     };
 
+    class ArgparseMissingArgument: public ArgparseCommonException {
+        public:
+            ArgparseMissingArgument(std::string name): text("Required argument is missing " + name) {}
+            virtual const char* what() const throw() {
+                return text.c_str();
+            }
+        private:
+            std::string text;
+    };
+
     class Args {
         public:
             Args() {
@@ -179,8 +189,8 @@ namespace argcc {
      */
     class Parser {
         public:
-            Parser(int nargs, std::string help, bool unique):
-                nargs(nargs), help(help), unique(unique) { }
+            Parser(int nargs, std::string help, bool unique, bool required):
+                nargs(nargs), help(help), unique(unique), required(required) { }
 
             virtual ~Parser() {};
             /**
@@ -202,16 +212,21 @@ namespace argcc {
             bool isUnique() {
                 return unique;
             }
+
+            bool isRequired() {
+                return required;
+            }
         private:
             int nargs;
             std::string help;
             bool unique;
+            bool required;
     };
 
     class IntParser: public Parser {
         public:
-            IntParser(int nargs, std::string help, bool unique):
-                Parser::Parser(nargs, help, unique) { }
+            IntParser(int nargs, std::string help, bool unique, bool required):
+                Parser::Parser(nargs, help, unique, required) { }
 
             virtual void parse(std::string input, std::string name, Args *args) {
                 try {
@@ -226,8 +241,8 @@ namespace argcc {
 
     class BoolParser: public Parser {
         public:
-            BoolParser(int nargs, std::string help, bool unique):
-                Parser::Parser(nargs, help, unique) { }
+            BoolParser(int nargs, std::string help, bool unique, bool required):
+                Parser::Parser(nargs, help, unique, required) { }
 
             virtual void parse(std::string input, std::string name, Args *args) {
                 if (input != "true" && input != "false") {
@@ -241,8 +256,8 @@ namespace argcc {
 
     class FloatParser: public Parser {
         public:
-            FloatParser(int nargs, std::string help, bool unique):
-                Parser::Parser(nargs, help, unique) { }
+            FloatParser(int nargs, std::string help, bool unique, bool required):
+                Parser::Parser(nargs, help, unique, required) { }
 
             virtual void parse(std::string input, std::string name, Args *args) {
                 try {
@@ -256,8 +271,8 @@ namespace argcc {
 
     class StringParser: public Parser {
         public:
-            StringParser(int nargs, std::string help, bool unique):
-                Parser::Parser(nargs, help, unique) { }
+            StringParser(int nargs, std::string help, bool unique, bool required):
+                Parser::Parser(nargs, help, unique, required) { }
 
             virtual void parse(std::string input, std::string name, Args *args) {
                 args->addString(name, input);
@@ -274,16 +289,16 @@ namespace argcc {
             ~Argparse() {}
 
             void addArgument(std::string name, ArgparseType type,
-                    int nargs=1, std::string help="", std::string shortName="", bool unique=false) {
-                args[name] = makeParser(name, type, nargs, help, unique);
+                    int nargs=1, std::string help="", std::string shortName="", bool unique=false, bool required=false) {
+                args[name] = makeParser(name, type, nargs, help, unique, required);
 
                 if (shortName != "") {
                     shortNames[shortName] = name;
                 }
             }
 
-            void addConsumer(std::string name, ArgparseType type, std::string help) {
-                consumer = makeParser(name, type, -1, help, true);
+            void addConsumer(std::string name, ArgparseType type, std::string help, bool required=false) {
+                consumer = makeParser(name, type, -1, help, true, required);
                 consumerName = name;
             }
 
@@ -313,6 +328,11 @@ namespace argcc {
                         throw ArgparseInvalidArgument(name);
                     }
                 }
+
+                // find any required arguments that did not receive an input
+                // if so throw!
+                ensureRequiredArgs(resultArgs);
+
 
                 return resultArgs;
             }
@@ -360,18 +380,18 @@ namespace argcc {
             }
         private:
             std::shared_ptr<Parser> makeParser(std::string name, ArgparseType type,
-                    int nargs, std::string help, bool unique) {
+                    int nargs, std::string help, bool unique, bool required) {
                 switch (type) {
                     case ARGPARSE_STRING:
-                        return std::shared_ptr<Parser>(new StringParser(nargs, help, unique));
+                        return std::shared_ptr<Parser>(new StringParser(nargs, help, unique, required));
                     case ARGPARSE_FLOAT:
-                        return std::shared_ptr<Parser>(new FloatParser(nargs, help, unique));
+                        return std::shared_ptr<Parser>(new FloatParser(nargs, help, unique, required));
                     case ARGPARSE_BOOL:
-                        return std::shared_ptr<Parser>(new BoolParser(nargs, help, unique));
+                        return std::shared_ptr<Parser>(new BoolParser(nargs, help, unique, required));
                     case ARGPARSE_INT:
-                        return std::shared_ptr<Parser>(new IntParser(nargs, help, unique));
+                        return std::shared_ptr<Parser>(new IntParser(nargs, help, unique, required));
                     case ARGPARSE_IGNORE:
-                        return std::shared_ptr<Parser>(new Parser(nargs, help, unique));
+                        return std::shared_ptr<Parser>(new Parser(nargs, help, unique, required));
                 }
                 // this should never be reached
                 return std::shared_ptr<Parser>(nullptr);
@@ -416,6 +436,14 @@ namespace argcc {
                     return true;
                 }
                 return false;
+            }
+
+            void ensureRequiredArgs(Args resultArgs) {
+                for (auto it = args.begin(); it != args.end(); it++) {
+                    if (it->second->isRequired() && !resultArgs.containsAny(it->first)) {
+                        throw ArgparseMissingArgument(it->first);
+                    }
+                }
             }
 
             std::string progName;

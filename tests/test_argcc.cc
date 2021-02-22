@@ -20,10 +20,11 @@ void test_argcc(void **state) {
 
     parser.addArgument("flag", argcc::ARGPARSE_BOOL, 0, "flag", "-flag");
     parser.addArgument("unique", argcc::ARGPARSE_STRING, 1, "unqiue help", "-un", true);
+    parser.addArgument("required", argcc::ARGPARSE_STRING, 1, "required help", "-req", true);
 
     parser.addConsumer("consumer", argcc::ARGPARSE_STRING, "consumer...");
     {
-        int argc = 27;
+        int argc = 29;
         const char *argv[] = {
             "test",
             "string", "Test",
@@ -38,7 +39,8 @@ void test_argcc(void **state) {
             "-flag",
             "ignore_me",
             "unique", "test unique",
-            "consume", "the", "rest",
+            "required", "test required",
+            "consume", "the", "rest"
         };
         argcc::Args a = parser.parse(argc, (char**)argv);
 
@@ -78,6 +80,10 @@ void test_argcc(void **state) {
         auto uniqueSet = a.getSize("unique");
         assert_int_equal(uniqueSet, 1);
         assert_cc_string_equal(a.toString("unique"), std::string("test unique"));
+
+        auto reqSet = a.getSize("required");
+        assert_int_equal(reqSet, 1);
+        assert_cc_string_equal(a.toString("required"), std::string("test required"));
 
         auto consumerSet = a.getSize("consumer");
         assert_int_equal(consumerSet, 3);
@@ -199,6 +205,20 @@ void test_argcc_failure(void **state) {
             "unique", "Second string "
         };
         assert_throws(argcc::ArgparseInvalidArgument, {
+            argcc::Args a = parser.parse(argc, (char**)argv);
+        });
+    }
+
+    // required test
+    argcc::Argparse parserRequired("Unit test");
+
+    parser.addArgument("string", argcc::ARGPARSE_STRING, 1, "String help", "-s", false, true);
+    {
+        int argc = 1;
+        const char *argv[] = {
+            "test"
+        };
+        assert_throws(argcc::ArgparseMissingArgument, {
             argcc::Args a = parser.parse(argc, (char**)argv);
         });
     }
