@@ -16,6 +16,9 @@ int main(int argc, char **argv) {
     // flag
     parser.addArgument("-flag", argcc::ARGPARSE_BOOL, 0, "Set or default to false", "--f");
 
+    // required flag
+    parser.addArgument("-required", argcc::ARGPARSE_BOOL, 0, "Set or default to false. Required", "--req", false, true);
+
     // consume remainder
     parser.addConsumer("consumer", argcc::ARGPARSE_STRING, "remainder");
 
@@ -39,6 +42,9 @@ int main(int argc, char **argv) {
     } catch (argcc::ArgparseInvalidArgument &e) {
         // also caused by unique being used twice
         std::cerr << "Invalid argument" << std::endl;
+    } catch (argcc::ArgparseMissingArgument &e) {
+        // caused by missing required arugment
+        std::cerr << "Missing required argument" << std::endl;
     }
 
     return 0;
