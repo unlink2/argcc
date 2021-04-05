@@ -1,4 +1,4 @@
-CC=g++
+CC=@CXX@
 EXT=.cc
 DBG=gdb
 BIN=argcc
@@ -23,11 +23,11 @@ BINDIR=./bin
 
 DEBUG=-DDEBUG
 LIBS=
-CFLAGS=-Wall -g -std=c++17
-CFLAGS_LIB=-Wall -g
-LIBS_TEST=-lm -ljsoncpp
-CFLAGS_TEST=-Wall -g -std=c++17
-OTHER_FLAGS=-rdynamic
+CFLAGS=-Wall -g -std=c++17 @CXXFLAGS@
+CFLAGS_LIB=-Wall -g @CXXFLAGS@
+LIBS_TEST=-lm -ljsoncpp @CXXFLAGS@
+CFLAGS_TEST=-Wall -g -std=c++17 @CXXFLAGS@
+OTHER_FLAGS=-rdynamic @CXXFLAGS@
 MAIN = main # main for frontend
 TEST_MAIN = test # main for test
 INSTALLDIR = /usr/local/bin

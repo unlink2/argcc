@@ -16,6 +16,14 @@ This library requires at least C++17.
 
 ## Contribute/Run tests
 
+To compile run
+
+```bash
+autoconf -i
+./configure
+make
+```
+
 Unit tests can be run with `make test`.
 To contribute make sure to write tests and keep the actual librarie's code in the header file.
 
