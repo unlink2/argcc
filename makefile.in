@@ -22,12 +22,12 @@ ODIR_TEST=$(ODIR)/tests
 BINDIR=./bin
 
 DEBUG=-DDEBUG
-LIBS=
+LIBS=@LIBS@
 CFLAGS=-Wall -g -std=c++17 @CXXFLAGS@
-CFLAGS_LIB=-Wall -g @CXXFLAGS@
-LIBS_TEST=-lm -ljsoncpp @CXXFLAGS@
+CFLAGS_LIB=-Wall -g @LDFLAGS@
+LIBS_TEST=-lm
 CFLAGS_TEST=-Wall -g -std=c++17 @CXXFLAGS@
-OTHER_FLAGS=-rdynamic @CXXFLAGS@
+OTHER_FLAGS=-rdynamic
 MAIN = main # main for frontend
 TEST_MAIN = test # main for test
 INSTALLDIR = /usr/local/bin
