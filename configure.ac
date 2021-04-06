@@ -13,6 +13,10 @@ AC_SUBST(srcdir, "$srcdir")
 
 testsdir="./tests"
 frontdir="./frontend"
+libPath="./libs"
+
+headerSearchDirs="-Ilibs/argcc/src/ -Isrc/"
+AC_SUBST(headerSearchDirs, "$headerSearchDirs")
 
 ext=".cc"
 AC_SUBST(ext, "$ext")
@@ -29,14 +33,36 @@ AC_LANG(C++)
 ${CXXFLAGS=""}
 AC_PROG_CXX
 
-# get header only internal libraries
-
-define(GET_LIBS,
+# check for programs
+define(CHECK,
 [
-    ./getlibs.sh
+    printf "checking if %s is indalled..." $1
+    if ! command -v $1 &> /dev/null
+    then
+        printf "\n"
+        AC_MSG_ERROR([$1 is required])
+    else
+        printf " yes\n"
+    fi
 ])
 
-GET_LIBS([Updating external libraries])
+CHECK([git])
+
+# get header only library
+define(GET_LIBS,
+[
+    # get libraries
+    mkdir -p $libPath
+    if [[ -d "$libPath/$1" ]]; then
+        echo "Updating $libPath/$1"
+        git -C "$libPath/$1" pull
+    else
+        echo "Cloning $libPath/$1"
+        git clone $2 "$libPath/$1"
+    fi
+])
+
+# GET_LIBS([argcc], [https://github.com/unlink2/argcc])
 
 if test $with_tests
 then

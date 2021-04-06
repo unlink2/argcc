@@ -17,7 +17,7 @@ ODIR=./obj
 BINDIR=./bin
 
 LIBS=@LIBS@
-CFLAGS=-Wall -g -std=c++17 -Ilibs/argcc/src/ -Isrc/ @CXXFLAGS@
+CFLAGS=-Wall -g -std=c++17 @headerSearchDirs@ @CXXFLAGS@
 LIBS_TEST=
 OTHER_FLAGS=
 MAIN = @main@ # main for frontend
