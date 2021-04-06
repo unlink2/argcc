@@ -24,7 +24,14 @@ autoconf -i
 make
 ```
 
-Unit tests can be run with `make test`.
+Unit tests can be built using:
+```bash
+autoconf -i
+./configure --with-tests
+make
+make run
+```
+
 To contribute make sure to write tests and keep the actual librarie's code in the header file.
 
 ## Usage
