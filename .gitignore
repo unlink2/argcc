@@ -1,5 +1,6 @@
 bin/
 obj/
+libs/
 autom4te.cache/
 config.log
 config.status

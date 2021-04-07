@@ -12,9 +12,9 @@ INCLUDEDIR_FRONT=@frontdir@
 SRCDIR_FRONT=@frontdir@
 
 
-ODIR=./obj
+ODIR=@odir@
 # all binaries
-BINDIR=./bin
+BINDIR=@bindir@
 
 LIBS=@LIBS@
 CFLAGS=-Wall -g -std=c++17 @headerSearchDirs@ @CXXFLAGS@
@@ -22,6 +22,7 @@ LIBS_TEST=
 OTHER_FLAGS=
 MAIN = @main@ # main for frontend
 INSTALLDIR = @installdir@
+LDFLAGS = @LDFLAGS@
 
 # modules from core that can be testsd
 TESTABLE_MODULES = @srcObj@
@@ -49,7 +50,7 @@ $(ODIR)/%.o: $(SRCDIR_FRONT)/%$(EXT) $(FRONT_DEPS) | init
 	$(CC) $(OTHER_FLAGS) -c -o $@ $< $(CFLAGS)
 
 ${BIN}: $(OBJ)
-	$(CC) $(OTHER_FLAGS) -o $(BINDIR)/$@ $^ $(LIBS)
+	$(CC) $(OTHER_FLAGS) -o $(BINDIR)/$@ $^ $(LIBS) $(LDFLAGS)
 
 # =====================
 # unit test tasks

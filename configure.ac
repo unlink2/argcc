@@ -21,6 +21,11 @@ AC_SUBST(headerSearchDirs, "$headerSearchDirs")
 ext=".cc"
 AC_SUBST(ext, "$ext")
 
+odir="./obj"
+AC_SUBST(odir, "$odir")
+bindir="./bin"
+AC_SUBST(bindir, "$bindir")
+
 define(GET_OBJS,
 [
  objs=$(ls $2/*$ext | xargs -I{} -n 1 basename {} $ext | sed "s/$3*$//" | tr '\n' ' ')
