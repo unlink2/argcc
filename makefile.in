@@ -67,8 +67,8 @@ leaktest:
 
 .PHONY: clean
 clean:
-	rm -f $(ODIR)/*.o
-	rm -f $(BINDIR)/*
+	rm -f ./$(ODIR)/*.o
+	rm -f ./$(BINDIR)/*
 
 .PHONY: setup
 init:
