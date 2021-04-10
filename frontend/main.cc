@@ -5,22 +5,22 @@ int main(int argc, char **argv) {
     argcc::Argparse parser("Sample parser");
 
     // string input
-    parser.addArgument("-test", argcc::ARGPARSE_STRING, 1, "Input a string", "--t");
+    parser.addArgument("-test", argcc::STRING, 1, "Input a string", "--t");
 
     // 2 integers
-    parser.addArgument("-int", argcc::ARGPARSE_INT, 2, "Input 2 integers", "--i");
+    parser.addArgument("-int", argcc::NUMBER, 2, "Input 2 integers", "--i");
 
     // unique integer
-    parser.addArgument("-unique", argcc::ARGPARSE_INT, 1, "Input 1 integer", "--ui", true);
+    parser.addArgument("-unique", argcc::NUMBER, 1, "Input 1 integer", "--ui", true);
 
     // flag
-    parser.addArgument("-flag", argcc::ARGPARSE_BOOL, 0, "Set or default to false", "--f");
+    parser.addArgument("-flag", argcc::BOOL, 0, "Set or default to false", "--f");
 
     // required flag
-    parser.addArgument("-required", argcc::ARGPARSE_BOOL, 0, "Set or default to false. Required", "--req", false, true);
+    parser.addArgument("-required", argcc::BOOL, 0, "Set or default to false. Required", "--req", false, true);
 
     // consume remainder
-    parser.addConsumer("consumer", argcc::ARGPARSE_STRING, "remainder");
+    parser.addConsumer("consumer", argcc::STRING, "remainder");
 
     try {
         auto parsed = parser.parse(argc, argv);
@@ -31,10 +31,10 @@ int main(int argc, char **argv) {
             std::cout << "TestValue: " << testValue << std::endl;
         }
         if (parsed.containsAny("-int")) {
-            auto intValue1 = parsed.toInt("-int");
-            auto intValue2 = parsed.toInt("-int", 1);
-            auto intOutOfBounds = parsed.toInt("-int", 2, 64); // default value
-            std::cout << "-int size: " << parsed.getSize("-int") << " Int1: " << intValue1 << " Int2: " << intValue2
+            auto intValue1 = parsed.toNumber("-int");
+            auto intValue2 = parsed.toNumber("-int", 1);
+            auto intOutOfBounds = parsed.toNumber("-int", 2, 64); // default value
+            std::cout << "-int size: " << parsed.getSize("-int") << " Number1: " << intValue1 << " Number2: " << intValue2
                 << " Out of bounds value: " << intOutOfBounds << std::endl;
         }
     } catch (argcc::ArgparseInsufficientArguments &e) {

@@ -99,6 +99,5 @@ else
     GET_OBJS([srcObj], [$srcdir], [])
     GET_OBJS([frontendObj], [$frontdir], $main)
 fi
-
 AC_CONFIG_FILES([makefile])
 AC_OUTPUT

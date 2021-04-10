@@ -1,13 +1,7 @@
-# ARGCC - A C++ header-only command line parser
+# ARGCC - A C++ header-only command line parser and configuration file parser
 
-This library is a very basic argument parser.
-
-Why?
-
-I found myself writing argument parser over and over again.
-They always ended up looking about the same and working well enough.
-From now on for all my projects I will be using this unified helper library instead
-of coming up with a new implementation for every project.
+This is a common shared library for command line argument
+and configuration file parsing.
 
 ## Build
 
@@ -34,7 +28,7 @@ make run
 
 To contribute make sure to write tests and keep the actual librarie's code in the header file.
 
-## Usage
+## Usage Command Line Parser
 
 ### Create parser
 
@@ -74,3 +68,66 @@ To contribute make sure to write tests and keep the actual librarie's code in th
 
 The `frontend` folder contains a sample argument parser.
 
+## Usage Configuratio File Parser
+
+The configration files have a json-like format.
+
+```
+{
+    string="Hello"
+    string2='World'
+    integer=1
+    real=3.1415
+    section = {
+        a=1
+        b=2
+        c=3
+    }
+    list=[1 2 3]
+    undefined=nil
+}
+```
+
+To parse an input string simply creata the parser object
+
+```c++
+#include "configcc.h"
+
+int main(int argc, char **argv) {
+    std::string input = readConfigFile();
+    configcc::ConfigStringify stringify;
+    configcc::ConfigParser parser(input);
+    std::shared_ptr<configcc::ConfigObject> root = parser.parse();
+
+    // turn back into string
+    stringify.stringify(root);
+}
+```
+
+The parsed file will return a hirachy of ConfigObjects
+
+```c++
+// check if the object is of a certain type and convert
+root.isString();
+root.toString();
+
+root.isNumber();
+root.toNumber();
+
+root.isReal();
+root.totReal();
+
+root.isBool();
+root.toBool();
+
+root.isNil();
+root.toNil();
+
+// implemented using std::vector<std::shared_ptr<ConfigObject>>
+root.isList();
+root.toList();
+
+// implemented using std::map<std::string, std::shared_ptr<ConfigObject>>
+root.isSection();
+root.toSection();
+```

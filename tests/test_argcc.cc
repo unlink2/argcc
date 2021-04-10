@@ -1,4 +1,4 @@
-#include "../src/argcc.h"
+#include "argcc.h"
 #include "test_argcc.h"
 #include <any>
 
@@ -6,23 +6,23 @@ void test_argcc(void **state) {
     std::stringstream testOut;
     argcc::Argparse parser("Unit test", testOut);
 
-    parser.addArgument("string", argcc::ARGPARSE_STRING, 1, "String help", "-s");
-    parser.addArgument("int", argcc::ARGPARSE_INT, 1, "int help", "-i");
-    parser.addArgument("bool", argcc::ARGPARSE_BOOL, 1, "bool help", "-b");
-    parser.addArgument("float", argcc::ARGPARSE_FLOAT, 1, "float help", "-f");
+    parser.addArgument("string", argcc::STRING, 1, "String help", "-s");
+    parser.addArgument("int", argcc::NUMBER, 1, "int help", "-i");
+    parser.addArgument("bool", argcc::BOOL, 1, "bool help", "-b");
+    parser.addArgument("float", argcc::REAL, 1, "float help", "-f");
 
-    parser.addArgument("string_lst", argcc::ARGPARSE_STRING, 2, "String list help", "-sl");
-    parser.addArgument("int_lst", argcc::ARGPARSE_INT, 2, "int list help", "-il");
-    parser.addArgument("bool_lst", argcc::ARGPARSE_BOOL, 2, "bool list help", "-bl");
-    parser.addArgument("float_lst", argcc::ARGPARSE_FLOAT, 2, "float list help", "-fl");
+    parser.addArgument("string_lst", argcc::STRING, 2, "String list help", "-sl");
+    parser.addArgument("int_lst", argcc::NUMBER, 2, "int list help", "-il");
+    parser.addArgument("bool_lst", argcc::BOOL, 2, "bool list help", "-bl");
+    parser.addArgument("float_lst", argcc::REAL, 2, "float list help", "-fl");
 
-    parser.addArgument("ignore_me", argcc::ARGPARSE_IGNORE, 0, "ignored", "-ig");
+    parser.addArgument("ignore_me", argcc::IGNORE, 0, "ignored", "-ig");
 
-    parser.addArgument("flag", argcc::ARGPARSE_BOOL, 0, "flag", "-flag");
-    parser.addArgument("unique", argcc::ARGPARSE_STRING, 1, "unqiue help", "-un", true);
-    parser.addArgument("required", argcc::ARGPARSE_STRING, 1, "required help", "-req", true);
+    parser.addArgument("flag", argcc::BOOL, 0, "flag", "-flag");
+    parser.addArgument("unique", argcc::STRING, 1, "unqiue help", "-un", true);
+    parser.addArgument("required", argcc::STRING, 1, "required help", "-req", true);
 
-    parser.addConsumer("consumer", argcc::ARGPARSE_STRING, "consumer...");
+    parser.addConsumer("consumer", argcc::STRING, "consumer...");
     {
         int argc = 29;
         const char *argv[] = {
@@ -58,14 +58,14 @@ void test_argcc(void **state) {
 
         auto intSet = a.getSize("int");
         assert_int_equal(intSet, 2);
-        assert_int_equal(a.toInt("int"), 123);
-        assert_int_equal(a.toInt("int", 1), 456);
-        assert_int_equal(a.toInt("int", 2, 64), 64);
+        assert_int_equal(a.toNumber("int"), 123);
+        assert_int_equal(a.toNumber("int", 1), 456);
+        assert_int_equal(a.toNumber("int", 2, 64), 64);
 
         auto floatSet = a.getSize("float");
         assert_int_equal(floatSet, 2);
-        assert_float_equal(a.toFloat("float"), 3.1415, 0.001);
-        assert_float_equal(a.toFloat("float", 1), 6.1415, 0.001);
+        assert_float_equal(a.toReal("float"), 3.1415, 0.001);
+        assert_float_equal(a.toReal("float", 1), 6.1415, 0.001);
 
         auto stringSet = a.getSize("string");
         assert_int_equal(stringSet, 2);
@@ -108,18 +108,18 @@ void test_argcc(void **state) {
 void test_argcc_failure(void **state) {
     argcc::Argparse parser("Unit test");
 
-    parser.addArgument("string", argcc::ARGPARSE_STRING, 1, "String help", "-s");
-    parser.addArgument("int", argcc::ARGPARSE_INT, 1, "int help", "-i");
-    parser.addArgument("bool", argcc::ARGPARSE_BOOL, 1, "bool help", "-b");
-    parser.addArgument("float", argcc::ARGPARSE_FLOAT, 1, "float help", "-f");
+    parser.addArgument("string", argcc::STRING, 1, "String help", "-s");
+    parser.addArgument("int", argcc::NUMBER, 1, "int help", "-i");
+    parser.addArgument("bool", argcc::BOOL, 1, "bool help", "-b");
+    parser.addArgument("float", argcc::REAL, 1, "float help", "-f");
 
-    parser.addArgument("string_lst", argcc::ARGPARSE_STRING, 2, "String list help", "-sl");
-    parser.addArgument("int_lst", argcc::ARGPARSE_INT, 2, "int list help", "-il");
-    parser.addArgument("bool_lst", argcc::ARGPARSE_BOOL, 2, "bool list help", "-bl");
-    parser.addArgument("float_lst", argcc::ARGPARSE_FLOAT, 2, "float list help", "-fl");
+    parser.addArgument("string_lst", argcc::STRING, 2, "String list help", "-sl");
+    parser.addArgument("int_lst", argcc::NUMBER, 2, "int list help", "-il");
+    parser.addArgument("bool_lst", argcc::BOOL, 2, "bool list help", "-bl");
+    parser.addArgument("float_lst", argcc::REAL, 2, "float list help", "-fl");
 
-    parser.addConsumer("consumer", argcc::ARGPARSE_STRING, "consumer help");
-    parser.addArgument("unique", argcc::ARGPARSE_STRING, 1, "unqiue help", "-un", true);
+    parser.addConsumer("consumer", argcc::STRING, "consumer help");
+    parser.addArgument("unique", argcc::STRING, 1, "unqiue help", "-un", true);
     // bool failure
     {
         int argc = 3;
@@ -212,7 +212,7 @@ void test_argcc_failure(void **state) {
     // required test
     argcc::Argparse parserRequired("Unit test");
 
-    parser.addArgument("string", argcc::ARGPARSE_STRING, 1, "String help", "-s", false, true);
+    parser.addArgument("string", argcc::STRING, 1, "String help", "-s", false, true);
     {
         int argc = 1;
         const char *argv[] = {
