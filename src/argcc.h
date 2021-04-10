@@ -40,6 +40,12 @@ namespace argcc {
         IGNORE
     } ArgparseType;
 
+    // valid types for args
+    typedef int ArgNumber;
+    typedef float ArgReal;
+    typedef bool ArgBool;
+    typedef std::string ArgString;
+
     class ArgparseCommonException: public std::exception {
         public:
             ~ArgparseCommonException() {}
@@ -91,20 +97,20 @@ namespace argcc {
             /**
              * Adds input value to set.
              */
-            void addString(std::string name, std::string value) {
-                addGeneric<std::string>(name, value);
+            void addString(std::string name, ArgString value) {
+                addGeneric<ArgString>(name, value);
             }
 
-            void addNumber(std::string name, int value) {
-                addGeneric<int>(name, value);
+            void addNumber(std::string name, ArgNumber value) {
+                addGeneric<ArgNumber>(name, value);
             }
 
-            void addReal(std::string name, float value) {
-                addGeneric<float>(name, value);
+            void addReal(std::string name, ArgReal value) {
+                addGeneric<ArgReal>(name, value);
             }
 
-            void addBool(std::string name, bool value) {
-                addGeneric<bool>(name, value);
+            void addBool(std::string name, ArgBool value) {
+                addGeneric<ArgBool>(name, value);
             }
 
             int getSize(std::string name) {
@@ -127,20 +133,20 @@ namespace argcc {
             /**
              * Attempts to find and cast value at index in set
              */
-            std::string toString(std::string name, unsigned long index=0, std::string defaultValue="") {
-                return toGeneric<std::string>(name, defaultValue, index);
+            ArgString toString(std::string name, unsigned long index=0, ArgString defaultValue="") {
+                return toGeneric<ArgString>(name, defaultValue, index);
             }
 
-            bool toBool(std::string name, unsigned long index=0, bool defaultValue=false) {
-                return toGeneric<bool>(name, defaultValue, index);
+            ArgBool toBool(std::string name, unsigned long index=0, ArgBool defaultValue=false) {
+                return toGeneric<ArgBool>(name, defaultValue, index);
             }
 
-            int toNumber(std::string name, unsigned long index=0, int defaultValue=0) {
-                return toGeneric<int>(name, defaultValue, index);
+            ArgNumber toNumber(std::string name, unsigned long index=0, ArgNumber defaultValue=0) {
+                return toGeneric<ArgNumber>(name, defaultValue, index);
             }
 
-            float toReal(std::string name, unsigned long index=0, float defaultValue=0.0f) {
-                return toGeneric<float>(name, defaultValue, index);
+            ArgReal toReal(std::string name, unsigned long index=0, ArgReal defaultValue=0.0f) {
+                return toGeneric<ArgReal>(name, defaultValue, index);
             }
 
             /**
@@ -230,7 +236,7 @@ namespace argcc {
 
             virtual void parse(std::string input, std::string name, Args *args) {
                 try {
-                    int i = std::stoi(input);
+                    ArgNumber i = std::stoi(input);
                     args->addNumber(name, i);
                 } catch (std::invalid_argument &e) {
                     throw ArgparseTypeException();
@@ -261,7 +267,7 @@ namespace argcc {
 
             virtual void parse(std::string input, std::string name, Args *args) {
                 try {
-                    float f = std::stof(input);
+                    ArgReal f = std::stof(input);
                     args->addReal(name, f);
                 } catch (std::invalid_argument &e) {
                     throw ArgparseTypeException();

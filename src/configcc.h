@@ -75,8 +75,19 @@ namespace configcc {
         EXPECTED_SECTION_NAME,
         MISSING_RIGHT_BRACE,
         EXPECTED_EOF,
-        OBJECT_CANNOT_BE_INDEXED
+        TYPE_ERROR,
+        OUT_OF_BOUNDS
     };
+
+    class ConfigObject;
+    // valid obj types
+    typedef int ConfigNumber;
+    typedef float ConfigReal;
+    typedef bool ConfigBool;
+    typedef std::string ConfigString;
+    typedef std::nullptr_t ConfigNil;
+    typedef std::vector<std::shared_ptr<ConfigObject>> ConfigList;
+    typedef std::map<std::string, std::shared_ptr<ConfigObject>> ConfigSection;
 
 
     class Token;
@@ -110,8 +121,10 @@ namespace configcc {
                         return "Expected ]";
                     case EXPECTED_EOF:
                         return "Expected End of File";
-                    case OBJECT_CANNOT_BE_INDEXED:
-                        return "Object cannot be indexed";
+                    case TYPE_ERROR:
+                        return "Type error";
+                    case OUT_OF_BOUNDS:
+                        return "Value out of bounds";
                 }
                 return "";
             }
@@ -132,7 +145,19 @@ namespace configcc {
                 ConfigparseCommonException::ConfigparseCommonException(token, error) {}
     };
 
-    class ConfigObject;
+    class ConfigccTypeError: public ConfigparseCommonException {
+        public:
+            ConfigccTypeError(ObjectType expected):
+                ConfigparseCommonException(std::shared_ptr<Token>(nullptr), TYPE_ERROR), expected(expected) {}
+
+            const ObjectType expected;
+    };
+
+    class ConfigccOutOfBounds: public ConfigparseCommonException {
+        public:
+            ConfigccOutOfBounds():
+                ConfigparseCommonException(std::shared_ptr<Token>(nullptr), OUT_OF_BOUNDS) {}
+    };
 
     class ConfigObjectVisitor {
         public:
@@ -187,38 +212,38 @@ namespace configcc {
                 return std::any_cast<T>(value);
             }
 
-            float toReal() {
+            ConfigReal toReal() {
                 if (isNumber()) {
-                    return castTo<int>();
+                    return castTo<ConfigNumber>();
                 }
-                return castTo<float>();
+                return castTo<ConfigReal>();
             }
 
-            int toNumber() {
+            ConfigNumber toNumber() {
                 if (isReal()) {
-                    return castTo<float>();
+                    return castTo<ConfigReal>();
                 }
-                return castTo<int>();
+                return castTo<ConfigNumber>();
             }
 
-            std::string& toString() {
-                return castTo<std::string&>();
+            ConfigString& toString() {
+                return castTo<ConfigString&>();
             }
 
-            bool toBool()  {
-                return castTo<bool>();
+            ConfigBool toBool()  {
+                return castTo<ConfigBool>();
             }
 
-            std::nullptr_t toNil() {
-                return castTo<std::nullptr_t>();
+            ConfigNil toNil() {
+                return castTo<ConfigNil>();
             }
 
-            std::shared_ptr<std::vector<std::shared_ptr<ConfigObject>>> toList() {
-                return castTo<std::shared_ptr<std::vector<std::shared_ptr<ConfigObject>>>>();
+            std::shared_ptr<ConfigList> toList() {
+                return castTo<std::shared_ptr<ConfigList>>();
             }
 
-            std::shared_ptr<std::map<std::string, std::shared_ptr<ConfigObject>>> toSection() {
-                return castTo<std::shared_ptr<std::map<std::string, std::shared_ptr<ConfigObject>>>>();
+            std::shared_ptr<ConfigSection> toSection() {
+                return castTo<std::shared_ptr<ConfigSection>>();
             }
 
             ObjectType getType() {
@@ -257,7 +282,6 @@ namespace configcc {
                 return type == SECTION;
             }
 
-
             std::any accept(ConfigObjectVisitor *visitor) {
                 std::any result;
                 switch (getType()) {
@@ -285,6 +309,27 @@ namespace configcc {
                 }
 
                 return result;
+            }
+
+            std::shared_ptr<ConfigObject> get(size_t index) {
+                if (isList()) {
+                    if (index >= toList()->size()) {
+                        throw ConfigccOutOfBounds();
+                    }
+                    return toList()->at(index);
+                }
+                throw ConfigccTypeError(LIST);
+            }
+
+            std::shared_ptr<ConfigObject> get(std::string name) {
+                if (isSection()) {
+                    auto found = toSection()->find(name);
+                    if (found == toSection()->end()) {
+                        throw ConfigccOutOfBounds();
+                    }
+                    return found->second;
+                }
+                throw ConfigccTypeError(SECTION);
             }
         private:
             ObjectType type;
@@ -574,11 +619,11 @@ namespace configcc {
                 addToken(STRING_TOKEN, ConfigObject(STRING, value));
             }
 
-            float stringToReal(const std::string& number) {
+            ConfigReal stringToReal(const std::string& number) {
                 return std::stod(number);
             }
 
-            int stringToNumber(const std::string& number, int base=10) {
+            ConfigNumber stringToNumber(const std::string& number, int base=10) {
                 return std::stol(number, nullptr, base);
             }
 
@@ -702,8 +747,7 @@ namespace configcc {
             std::shared_ptr<ConfigObject> section() {
                 advance(); // {
                 auto root = std::make_shared<ConfigObject>(ConfigObject(SECTION,
-                            std::make_shared<std::map<std::string, std::shared_ptr<ConfigObject>>>(
-                                std::map<std::string, std::shared_ptr<ConfigObject>>())));
+                            std::make_shared<ConfigSection>()));
                 // name = value until end of section
                 while (!check(RIGHT_BRACE) && !isAtEnd()) {
                     auto name = consume(SECTION_NAME, EXPECTED_SECTION_NAME);
@@ -721,8 +765,7 @@ namespace configcc {
             std::shared_ptr<ConfigObject> list() {
                 advance(); // [
                 auto root = std::make_shared<ConfigObject>(ConfigObject(LIST,
-                            std::make_shared<std::vector<std::shared_ptr<ConfigObject>>>(
-                                std::vector<std::shared_ptr<ConfigObject>>())));
+                            std::make_shared<ConfigList>()));
                 // [value value value... ]
                 while (!check(RIGHT_BRACKET) && !isAtEnd()) {
                     auto value = object();

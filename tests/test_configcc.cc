@@ -33,6 +33,26 @@ void test_object(void **state) {
     // float
     configcc::ConfigObject f(configcc::REAL, float(3.1415));
     assert_true(f.isScalar());
+
+    // get section, we just test the parser for easy data setup
+    {
+        configcc::ConfigParser parser("{a=1 b=2 c=3}");
+        auto root = parser.parse();
+
+        auto a = root->get("a");
+        assert_int_equal(a->toNumber(), 1);
+        assert_throws(configcc::ConfigccOutOfBounds, {root->get("d");});
+    }
+    {
+        configcc::ConfigParser parser("[1 2 3]");
+        auto root = parser.parse();
+
+        assert_int_equal(root->get(0)->toNumber(), 1);
+        assert_int_equal(root->get(1)->toNumber(), 2);
+        assert_int_equal(root->get(2)->toNumber(), 3);
+
+        assert_throws(configcc::ConfigccOutOfBounds, {root->get(3);});
+    }
 }
 
 void test_configcc_scanner_isAlphaNumeric(void **state) {
