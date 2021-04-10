@@ -33,11 +33,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
 namespace argcc {
     typedef enum {
-        ARGPARSE_BOOL,
-        ARGPARSE_INT,
-        ARGPARSE_FLOAT,
-        ARGPARSE_STRING,
-        ARGPARSE_IGNORE
+        BOOL,
+        NUMBER,
+        REAL,
+        STRING,
+        IGNORE
     } ArgparseType;
 
     class ArgparseCommonException: public std::exception {
@@ -95,11 +95,11 @@ namespace argcc {
                 addGeneric<std::string>(name, value);
             }
 
-            void addInt(std::string name, int value) {
+            void addNumber(std::string name, int value) {
                 addGeneric<int>(name, value);
             }
 
-            void addFloat(std::string name, float value) {
+            void addReal(std::string name, float value) {
                 addGeneric<float>(name, value);
             }
 
@@ -135,11 +135,11 @@ namespace argcc {
                 return toGeneric<bool>(name, defaultValue, index);
             }
 
-            int toInt(std::string name, unsigned long index=0, int defaultValue=0) {
+            int toNumber(std::string name, unsigned long index=0, int defaultValue=0) {
                 return toGeneric<int>(name, defaultValue, index);
             }
 
-            float toFloat(std::string name, unsigned long index=0, float defaultValue=0.0f) {
+            float toReal(std::string name, unsigned long index=0, float defaultValue=0.0f) {
                 return toGeneric<float>(name, defaultValue, index);
             }
 
@@ -223,15 +223,15 @@ namespace argcc {
             bool required;
     };
 
-    class IntParser: public Parser {
+    class NumberParser: public Parser {
         public:
-            IntParser(int nargs, std::string help, bool unique, bool required):
+            NumberParser(int nargs, std::string help, bool unique, bool required):
                 Parser::Parser(nargs, help, unique, required) { }
 
             virtual void parse(std::string input, std::string name, Args *args) {
                 try {
                     int i = std::stoi(input);
-                    args->addInt(name, i);
+                    args->addNumber(name, i);
                 } catch (std::invalid_argument &e) {
                     throw ArgparseTypeException();
                 }
@@ -254,15 +254,15 @@ namespace argcc {
 
     };
 
-    class FloatParser: public Parser {
+    class RealParser: public Parser {
         public:
-            FloatParser(int nargs, std::string help, bool unique, bool required):
+            RealParser(int nargs, std::string help, bool unique, bool required):
                 Parser::Parser(nargs, help, unique, required) { }
 
             virtual void parse(std::string input, std::string name, Args *args) {
                 try {
                     float f = std::stof(input);
-                    args->addFloat(name, f);
+                    args->addReal(name, f);
                 } catch (std::invalid_argument &e) {
                     throw ArgparseTypeException();
                 }
@@ -382,15 +382,15 @@ namespace argcc {
             std::shared_ptr<Parser> makeParser(std::string name, ArgparseType type,
                     int nargs, std::string help, bool unique, bool required) {
                 switch (type) {
-                    case ARGPARSE_STRING:
+                    case STRING:
                         return std::shared_ptr<Parser>(new StringParser(nargs, help, unique, required));
-                    case ARGPARSE_FLOAT:
-                        return std::shared_ptr<Parser>(new FloatParser(nargs, help, unique, required));
-                    case ARGPARSE_BOOL:
+                    case REAL:
+                        return std::shared_ptr<Parser>(new RealParser(nargs, help, unique, required));
+                    case BOOL:
                         return std::shared_ptr<Parser>(new BoolParser(nargs, help, unique, required));
-                    case ARGPARSE_INT:
-                        return std::shared_ptr<Parser>(new IntParser(nargs, help, unique, required));
-                    case ARGPARSE_IGNORE:
+                    case NUMBER:
+                        return std::shared_ptr<Parser>(new NumberParser(nargs, help, unique, required));
+                    case IGNORE:
                         return std::shared_ptr<Parser>(new Parser(nargs, help, unique, required));
                 }
                 // this should never be reached
