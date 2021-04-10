@@ -300,7 +300,7 @@ void test_configcc(void **state) {
     test_parser_full("{\n"
             "hi='Hello'\n"
             "w=\"World\"\n"
-            "array = [1 2 3 4]\n"
+            "array = [1 -2 +3.1 -4 -3.1415]\n"
             "section = {\n"
                     "a = 3.14\n"
                     "b = true\n"
@@ -308,7 +308,7 @@ void test_configcc(void **state) {
                     "d = false\n"
                 "}\n"
             "}"
-            , "{array=[1 2 3 4] hi=\"Hello\" section={a=3.14 b=true c=nil d=false} w=\"World\"}");
+            , "{array=[1 -2 3.1 -4 -3.1415] hi=\"Hello\" section={a=3.14 b=true c=nil d=false} w=\"World\"}");
 }
 
 #define test_parser_error(input) {\

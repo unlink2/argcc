@@ -60,7 +60,9 @@ namespace configcc {
         NIL_TOKEN,
         NUMBER_TOKEN,
         REAL_TOKEN,
-        STRING_TOKEN
+        STRING_TOKEN,
+        PLUS,
+        MINUS
     };
 
     enum ErrorType {
@@ -450,6 +452,12 @@ namespace configcc {
                             addToken(EOF_T);
                             throw ConfigccScannerError(tokens[tokens.size()-1], UNEXPECTED_TOKEN);
                         }
+                    case '+':
+                        addToken(PLUS);
+                        break;
+                    case '-':
+                        addToken(MINUS);
+                        break;
                     // ignore space \t and \r
                     case ' ':
                     case '\t':
@@ -787,7 +795,23 @@ namespace configcc {
             }
 
             std::shared_ptr<ConfigObject> literal() {
-                if (match(std::vector<TokenType> {NUMBER_TOKEN, REAL_TOKEN, STRING_TOKEN})) {
+                auto sign = 1;
+                if (match(std::vector<TokenType> {PLUS, MINUS})) {
+                    auto token = previous();
+                    if (token->getType() == MINUS) {
+                        sign = -1;
+                    }
+                }
+
+                if (match(std::vector<TokenType> {REAL_TOKEN})) {
+                    auto token = previous();
+                    auto literal = token->getLiteral();
+                    return std::make_shared<ConfigObject>(ConfigObject(literal.getType(), literal.toReal() * sign));
+                } else if (match(std::vector<TokenType> {NUMBER_TOKEN})) {
+                    auto token = previous();
+                    auto literal = token->getLiteral();
+                    return std::make_shared<ConfigObject>(ConfigObject(literal.getType(), literal.toNumber() * sign));
+                } else if (match(std::vector<TokenType> {STRING_TOKEN})) {
                     auto token = previous();
                     auto literal = token->getLiteral();
                     return std::make_shared<ConfigObject>(ConfigObject(&literal));
