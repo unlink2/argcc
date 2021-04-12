@@ -15,7 +15,7 @@ testsdir="./tests"
 frontdir="./frontend"
 libPath="./libs"
 
-headerSearchDirs="-Ilibs/argcc/src/ -Isrc/"
+headerSearchDirs="-Ilibs/liblc/src/ -Isrc/"
 AC_SUBST(headerSearchDirs, "$headerSearchDirs")
 
 ext=".cc"
@@ -67,7 +67,7 @@ define(GET_LIBS,
     fi
 ])
 
-# GET_LIBS([argcc], [https://github.com/unlink2/argcc])
+# GET_LIBS([liblc], [https://github.com/unlink2/liblc])
 
 if test $with_tests
 then
