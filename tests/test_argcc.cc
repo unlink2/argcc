@@ -4,25 +4,25 @@
 
 void test_argcc(void **state) {
     std::stringstream testOut;
-    argcc::Argparse parser("Unit test", testOut);
+    liblc::Argparse parser("Unit test", testOut);
 
-    parser.addArgument("string", argcc::STRING, 1, "String help", "-s");
-    parser.addArgument("int", argcc::NUMBER, 1, "int help", "-i");
-    parser.addArgument("bool", argcc::BOOL, 1, "bool help", "-b");
-    parser.addArgument("float", argcc::REAL, 1, "float help", "-f");
+    parser.addArgument("string", liblc::STRING, 1, "String help", "-s");
+    parser.addArgument("int", liblc::NUMBER, 1, "int help", "-i");
+    parser.addArgument("bool", liblc::BOOL, 1, "bool help", "-b");
+    parser.addArgument("float", liblc::REAL, 1, "float help", "-f");
 
-    parser.addArgument("string_lst", argcc::STRING, 2, "String list help", "-sl");
-    parser.addArgument("int_lst", argcc::NUMBER, 2, "int list help", "-il");
-    parser.addArgument("bool_lst", argcc::BOOL, 2, "bool list help", "-bl");
-    parser.addArgument("float_lst", argcc::REAL, 2, "float list help", "-fl");
+    parser.addArgument("string_lst", liblc::STRING, 2, "String list help", "-sl");
+    parser.addArgument("int_lst", liblc::NUMBER, 2, "int list help", "-il");
+    parser.addArgument("bool_lst", liblc::BOOL, 2, "bool list help", "-bl");
+    parser.addArgument("float_lst", liblc::REAL, 2, "float list help", "-fl");
 
-    parser.addArgument("ignore_me", argcc::IGNORE, 0, "ignored", "-ig");
+    parser.addArgument("ignore_me", liblc::IGNORE, 0, "ignored", "-ig");
 
-    parser.addArgument("flag", argcc::BOOL, 0, "flag", "-flag");
-    parser.addArgument("unique", argcc::STRING, 1, "unqiue help", "-un", true);
-    parser.addArgument("required", argcc::STRING, 1, "required help", "-req", true);
+    parser.addArgument("flag", liblc::BOOL, 0, "flag", "-flag");
+    parser.addArgument("unique", liblc::STRING, 1, "unqiue help", "-un", true);
+    parser.addArgument("required", liblc::STRING, 1, "required help", "-req", true);
 
-    parser.addConsumer("consumer", argcc::STRING, "consumer...");
+    parser.addConsumer("consumer", liblc::STRING, "consumer...");
     {
         int argc = 29;
         const char *argv[] = {
@@ -42,7 +42,7 @@ void test_argcc(void **state) {
             "required", "test required",
             "consume", "the", "rest"
         };
-        argcc::Args a = parser.parse(argc, (char**)argv);
+        liblc::Args a = parser.parse(argc, (char**)argv);
 
         assert_cc_string_equal(parser.getProgName(), std::string("test"));
 
@@ -99,27 +99,27 @@ void test_argcc(void **state) {
             "test",
             "--help"
         };
-        argcc::Args a = parser.parse(argc, (char**)argv);
+        liblc::Args a = parser.parse(argc, (char**)argv);
         assert_cc_string_equal(testOut.str(), parser.getHelpText());
 
     }
 }
 
 void test_argcc_failure(void **state) {
-    argcc::Argparse parser("Unit test");
+    liblc::Argparse parser("Unit test");
 
-    parser.addArgument("string", argcc::STRING, 1, "String help", "-s");
-    parser.addArgument("int", argcc::NUMBER, 1, "int help", "-i");
-    parser.addArgument("bool", argcc::BOOL, 1, "bool help", "-b");
-    parser.addArgument("float", argcc::REAL, 1, "float help", "-f");
+    parser.addArgument("string", liblc::STRING, 1, "String help", "-s");
+    parser.addArgument("int", liblc::NUMBER, 1, "int help", "-i");
+    parser.addArgument("bool", liblc::BOOL, 1, "bool help", "-b");
+    parser.addArgument("float", liblc::REAL, 1, "float help", "-f");
 
-    parser.addArgument("string_lst", argcc::STRING, 2, "String list help", "-sl");
-    parser.addArgument("int_lst", argcc::NUMBER, 2, "int list help", "-il");
-    parser.addArgument("bool_lst", argcc::BOOL, 2, "bool list help", "-bl");
-    parser.addArgument("float_lst", argcc::REAL, 2, "float list help", "-fl");
+    parser.addArgument("string_lst", liblc::STRING, 2, "String list help", "-sl");
+    parser.addArgument("int_lst", liblc::NUMBER, 2, "int list help", "-il");
+    parser.addArgument("bool_lst", liblc::BOOL, 2, "bool list help", "-bl");
+    parser.addArgument("float_lst", liblc::REAL, 2, "float list help", "-fl");
 
-    parser.addConsumer("consumer", argcc::STRING, "consumer help");
-    parser.addArgument("unique", argcc::STRING, 1, "unqiue help", "-un", true);
+    parser.addConsumer("consumer", liblc::STRING, "consumer help");
+    parser.addArgument("unique", liblc::STRING, 1, "unqiue help", "-un", true);
     // bool failure
     {
         int argc = 3;
@@ -128,8 +128,8 @@ void test_argcc_failure(void **state) {
             "bool", "something_else",
         };
 
-        assert_throws(argcc::ArgparseTypeException, {
-            argcc::Args a = parser.parse(argc, (char**)argv);
+        assert_throws(liblc::ArgparseTypeException, {
+            liblc::Args a = parser.parse(argc, (char**)argv);
         });
     }
     // int failure
@@ -140,8 +140,8 @@ void test_argcc_failure(void **state) {
             "int", "F123",
         };
 
-        assert_throws(argcc::ArgparseTypeException, {
-            argcc::Args a = parser.parse(argc, (char**)argv);
+        assert_throws(liblc::ArgparseTypeException, {
+            liblc::Args a = parser.parse(argc, (char**)argv);
         });
     }
 
@@ -153,8 +153,8 @@ void test_argcc_failure(void **state) {
             "float", "f123.3",
         };
 
-        assert_throws(argcc::ArgparseTypeException, {
-            argcc::Args a = parser.parse(argc, (char**)argv);
+        assert_throws(liblc::ArgparseTypeException, {
+            liblc::Args a = parser.parse(argc, (char**)argv);
         });
     }
 
@@ -166,8 +166,8 @@ void test_argcc_failure(void **state) {
             "string_lst", "f123.3",
         };
 
-        assert_throws(argcc::ArgparseInsufficientArguments, {
-            argcc::Args a = parser.parse(argc, (char**)argv);
+        assert_throws(liblc::ArgparseInsufficientArguments, {
+            liblc::Args a = parser.parse(argc, (char**)argv);
         });
     }
     // consumer failure
@@ -178,8 +178,8 @@ void test_argcc_failure(void **state) {
             "consume_me", "string", "test",
         };
 
-        assert_throws(argcc::ArgparseInvalidArgument, {
-            argcc::Args a = parser.parse(argc, (char**)argv);
+        assert_throws(liblc::ArgparseInvalidArgument, {
+            liblc::Args a = parser.parse(argc, (char**)argv);
         });
     }
 
@@ -190,8 +190,8 @@ void test_argcc_failure(void **state) {
             "test",
             "int", "1234"
         };
-        argcc::Args a = parser.parse(argc, (char**)argv);
-        assert_throws(argcc::ArgparseTypeException, {
+        liblc::Args a = parser.parse(argc, (char**)argv);
+        assert_throws(liblc::ArgparseTypeException, {
                 auto i = a.toString("int");
         });
     }
@@ -204,22 +204,22 @@ void test_argcc_failure(void **state) {
             "unique", "Test string",
             "unique", "Second string "
         };
-        assert_throws(argcc::ArgparseInvalidArgument, {
-            argcc::Args a = parser.parse(argc, (char**)argv);
+        assert_throws(liblc::ArgparseInvalidArgument, {
+            liblc::Args a = parser.parse(argc, (char**)argv);
         });
     }
 
     // required test
-    argcc::Argparse parserRequired("Unit test");
+    liblc::Argparse parserRequired("Unit test");
 
-    parser.addArgument("string", argcc::STRING, 1, "String help", "-s", false, true);
+    parser.addArgument("string", liblc::STRING, 1, "String help", "-s", false, true);
     {
         int argc = 1;
         const char *argv[] = {
             "test"
         };
-        assert_throws(argcc::ArgparseMissingArgument, {
-            argcc::Args a = parser.parse(argc, (char**)argv);
+        assert_throws(liblc::ArgparseMissingArgument, {
+            liblc::Args a = parser.parse(argc, (char**)argv);
         });
     }
 }

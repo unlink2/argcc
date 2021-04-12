@@ -31,7 +31,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 #include <iomanip>
 #include <any>
 
-namespace argcc {
+namespace liblc {
     typedef enum {
         BOOL,
         NUMBER,

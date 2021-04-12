@@ -1,4 +1,4 @@
-# ARGCC - A C++ header-only command line parser and configuration file parser
+# LibLC (Lib Lukas Common) - A C++ header-only command line parser and configuration file parser
 
 This is a common shared library for command line argument
 and configuration file parsing.

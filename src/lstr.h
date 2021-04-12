@@ -4,7 +4,7 @@
 #include <iostream>
 #include <sstream>
 
-namespace lstr {
+namespace liblc {
     char unescapeChar(std::string str, bool &didEscape, unsigned long index) {
         didEscape = true;
         if (str[index] == '\\') {

@@ -33,7 +33,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
 #include "lstr.h"
 
-namespace configcc {
+namespace liblc {
     enum ObjectType {
         NIL,
         BOOLEAN,
@@ -623,7 +623,7 @@ namespace configcc {
                 // closing "
                 advance();
 
-                std::string value = lstr::unescape(source->substr(start+1, current-start-2));
+                std::string value = unescape(source->substr(start+1, current-start-2));
                 addToken(STRING_TOKEN, ConfigObject(STRING, value));
             }
 
