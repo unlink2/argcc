@@ -8,17 +8,17 @@ void test_argcc(void **state) {
 
     parser.addArgument("string", liblc::STRING, 1, "String help", "-s");
     parser.addArgument("int", liblc::NUMBER, 1, "int help", "-i");
-    parser.addArgument("bool", liblc::BOOL, 1, "bool help", "-b");
+    parser.addArgument("bool", liblc::BOOLEAN, 1, "bool help", "-b");
     parser.addArgument("float", liblc::REAL, 1, "float help", "-f");
 
     parser.addArgument("string_lst", liblc::STRING, 2, "String list help", "-sl");
     parser.addArgument("int_lst", liblc::NUMBER, 2, "int list help", "-il");
-    parser.addArgument("bool_lst", liblc::BOOL, 2, "bool list help", "-bl");
+    parser.addArgument("bool_lst", liblc::BOOLEAN, 2, "bool list help", "-bl");
     parser.addArgument("float_lst", liblc::REAL, 2, "float list help", "-fl");
 
     parser.addArgument("ignore_me", liblc::IGNORE, 0, "ignored", "-ig");
 
-    parser.addArgument("flag", liblc::BOOL, 0, "flag", "-flag");
+    parser.addArgument("flag", liblc::BOOLEAN, 0, "flag", "-flag");
     parser.addArgument("unique", liblc::STRING, 1, "unqiue help", "-un", true);
     parser.addArgument("required", liblc::STRING, 1, "required help", "-req", true);
 
@@ -110,12 +110,12 @@ void test_argcc_failure(void **state) {
 
     parser.addArgument("string", liblc::STRING, 1, "String help", "-s");
     parser.addArgument("int", liblc::NUMBER, 1, "int help", "-i");
-    parser.addArgument("bool", liblc::BOOL, 1, "bool help", "-b");
+    parser.addArgument("bool", liblc::BOOLEAN, 1, "bool help", "-b");
     parser.addArgument("float", liblc::REAL, 1, "float help", "-f");
 
     parser.addArgument("string_lst", liblc::STRING, 2, "String list help", "-sl");
     parser.addArgument("int_lst", liblc::NUMBER, 2, "int list help", "-il");
-    parser.addArgument("bool_lst", liblc::BOOL, 2, "bool list help", "-bl");
+    parser.addArgument("bool_lst", liblc::BOOLEAN, 2, "bool list help", "-bl");
     parser.addArgument("float_lst", liblc::REAL, 2, "float list help", "-fl");
 
     parser.addConsumer("consumer", liblc::STRING, "consumer help");

@@ -14,10 +14,10 @@ int main(int argc, char **argv) {
     parser.addArgument("-unique", liblc::NUMBER, 1, "Input 1 integer", "--ui", true);
 
     // flag
-    parser.addArgument("-flag", liblc::BOOL, 0, "Set or default to false", "--f");
+    parser.addArgument("-flag", liblc::BOOLEAN, 0, "Set or default to false", "--f");
 
     // required flag
-    parser.addArgument("-required", liblc::BOOL, 0, "Set or default to false. Required", "--req", false, true);
+    parser.addArgument("-required", liblc::BOOLEAN, 0, "Set or default to false. Required", "--req", false, true);
 
     // consume remainder
     parser.addConsumer("consumer", liblc::STRING, "remainder");

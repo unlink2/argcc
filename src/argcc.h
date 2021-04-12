@@ -30,16 +30,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 #include <sstream>
 #include <iomanip>
 #include <any>
+#include "typedefs.h"
 
 namespace liblc {
-    typedef enum {
-        BOOL,
-        NUMBER,
-        REAL,
-        STRING,
-        IGNORE
-    } ArgparseType;
-
     // valid types for args
     typedef int ArgNumber;
     typedef float ArgReal;
@@ -392,12 +385,14 @@ namespace liblc {
                         return std::shared_ptr<Parser>(new StringParser(nargs, help, unique, required));
                     case REAL:
                         return std::shared_ptr<Parser>(new RealParser(nargs, help, unique, required));
-                    case BOOL:
+                    case BOOLEAN:
                         return std::shared_ptr<Parser>(new BoolParser(nargs, help, unique, required));
                     case NUMBER:
                         return std::shared_ptr<Parser>(new NumberParser(nargs, help, unique, required));
                     case IGNORE:
                         return std::shared_ptr<Parser>(new Parser(nargs, help, unique, required));
+                    default:
+                        break;
                 }
                 // this should never be reached
                 return std::shared_ptr<Parser>(nullptr);

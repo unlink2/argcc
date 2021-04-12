@@ -32,18 +32,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 #include <any>
 
 #include "lstr.h"
+#include "typedefs.h"
 
 namespace liblc {
-    enum ObjectType {
-        NIL,
-        BOOLEAN,
-        NUMBER,
-        REAL,
-        STRING,
-        LIST,
-        SECTION
-    };
-
     enum TokenType {
         EQUAL,
         SECTION_NAME,
@@ -307,6 +298,8 @@ namespace liblc {
                         break;
                     case NIL:
                         result = visitor->visitNil(this);
+                        break;
+                    default:
                         break;
                 }
 
