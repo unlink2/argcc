@@ -30,7 +30,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 #include <sstream>
 #include <iomanip>
 #include <any>
-#include "typedefs.h"
+#include "liblc_typedefs.h"
 
 namespace liblc {
     // valid types for args
