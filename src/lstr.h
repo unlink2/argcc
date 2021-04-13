@@ -5,7 +5,7 @@
 #include <sstream>
 
 namespace liblc {
-    char unescapeChar(std::string str, bool &didEscape, unsigned long index) {
+    inline char unescapeChar(std::string str, bool &didEscape, unsigned long index) {
         didEscape = true;
         if (str[index] == '\\') {
             switch (str[index+1]) {
@@ -39,7 +39,7 @@ namespace liblc {
         return -1;
     }
 
-    std::string unescape(std::string src) {
+    inline std::string unescape(std::string src) {
         std::stringstream strstream;
 
         for (unsigned long i = 0; i < src.size(); i++) {
