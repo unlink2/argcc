@@ -1,4 +1,4 @@
-#ifndef __LIBLC_LSTR_H__
+#ifndef __LIBLC__LSTR_H__
 #define __LIBLC__LSTR_H__
 
 #include <iostream>
