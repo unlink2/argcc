@@ -152,6 +152,12 @@ namespace liblc {
                 ConfigparseCommonException(std::shared_ptr<Token>(nullptr), OUT_OF_BOUNDS) {}
     };
 
+    class ConfigccKeyNotFound: public ConfigparseCommonException {
+        public:
+            ConfigccKeyNotFound():
+                ConfigparseCommonException(std::shared_ptr<Token>(nullptr), OUT_OF_BOUNDS) {}
+    };
+
     class ConfigObjectVisitor {
         public:
             ConfigObjectVisitor() {}
@@ -320,7 +326,7 @@ namespace liblc {
                 if (isSection()) {
                     auto found = toSection()->find(name);
                     if (found == toSection()->end()) {
-                        throw ConfigccOutOfBounds();
+                        throw ConfigccKeyNotFound();
                     }
                     return found->second;
                 }

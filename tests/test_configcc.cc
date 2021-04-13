@@ -41,7 +41,7 @@ void test_object(void **state) {
 
         auto a = root->get("a");
         assert_int_equal(a->toNumber(), 1);
-        assert_throws(liblc::ConfigccOutOfBounds, {root->get("d");});
+        assert_throws(liblc::ConfigccKeyNotFound, {root->get("d");});
     }
     {
         liblc::ConfigParser parser("[1 2 3]");
