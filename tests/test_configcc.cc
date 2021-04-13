@@ -291,7 +291,7 @@ void test_configcc_scanner_failure(void **state) {
 
 void test_configcc(void **state) {
     // parse from string back to string
-    test_parser_full("{x=10 pi=3.1415}", "{pi=3.1415 x=10}");
+    test_parser_full("{x=10 pi=3.1415}", "{\"pi\"=3.1415 \"x\"=10}");
 
     test_parser_full("10", "10");
 
@@ -306,9 +306,11 @@ void test_configcc(void **state) {
                     "b = true\n"
                     "c = nil\n"
                     "d = false\n"
+                    "\"key str\"=\"test\""
                 "}\n"
             "}"
-            , "{array=[1 -2 3.1 -4 -3.1415] hi=\"Hello\" section={a=3.14 b=true c=nil d=false} w=\"World\"}");
+            , "{\"array\"=[1 -2 3.1 -4 -3.1415] \"hi\"=\"Hello\" "
+            "\"section\"={\"a\"=3.14 \"b\"=true \"c\"=nil \"d\"=false \"key str\"=\"test\"} \"w\"=\"World\"}");
 }
 
 #define test_parser_error(input) {\

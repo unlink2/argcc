@@ -702,7 +702,7 @@ namespace liblc {
                     if (it != objMap->begin()) {
                         stream << ' ';
                     }
-                    stream << it->first << '=';
+                    stream << '"' << it->first << '"' << '=';
                     stream << stringify(it->second);
                 }
                 stream << '}';
@@ -751,11 +751,20 @@ namespace liblc {
                             std::make_shared<ConfigSection>()));
                 // name = value until end of section
                 while (!check(RIGHT_BRACE) && !isAtEnd()) {
-                    auto name = consume(SECTION_NAME, EXPECTED_SECTION_NAME);
+                    auto name = advance();
+                    std::string keyName = "";
+                    if (name->getType() == SECTION_NAME) {
+                        keyName = name->getLexeme();
+                    } else if (name->getType() == STRING_TOKEN) {
+                        keyName = name->getLiteral().toString();
+                    } else {
+                        throw handleError(EXPECTED_SECTION_NAME);
+                    }
+
                     consume(EQUAL, EXPECTED_EQUAL);
                     auto value = object();
 
-                    addObjectToSection(value, name->getLexeme(), root);
+                    addObjectToSection(value, keyName, root);
                 }
 
                 consume(RIGHT_BRACE, MISSING_RIGHT_BRACE);
