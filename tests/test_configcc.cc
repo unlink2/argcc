@@ -297,6 +297,8 @@ void test_configcc(void **state) {
 
     test_parser_full("[10 20 30 40]", "[10 20 30 40]");
 
+    test_parser_full("", "{}");
+
     test_parser_full("{\n"
             "hi='Hello'\n"
             "w=\"World\"\n"

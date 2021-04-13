@@ -722,6 +722,11 @@ namespace liblc {
             }
 
             std::shared_ptr<ConfigObject> parse() {
+                if (isAtEnd()) {
+                    // are we at the end already? if so return an empty object
+                    return std::make_shared<ConfigObject>(SECTION, std::make_shared<ConfigSection>(ConfigSection()));
+                }
+
                 // root-level object
                 auto root = object();
                 if (!isAtEnd()) {
