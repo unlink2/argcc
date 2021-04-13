@@ -1,5 +1,5 @@
-#ifndef __TYPEDEFS_H__
-#define __TYPEDEFS_H__
+#ifndef __LIBLC__TYPEDEFS_H__
+#define __LIBLC_TYPEDEFS_H__
 
 namespace liblc {
     enum ObjectType {
