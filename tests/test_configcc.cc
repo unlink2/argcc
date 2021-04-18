@@ -36,7 +36,7 @@ void test_object(void **state) {
 
     // get section, we just test the parser for easy data setup
     {
-        liblc::ConfigParser parser("{a=1 b=2 c=3}");
+        liblc::ConfigParser parser("{a=1, b=2, c=3}");
         auto root = parser.parse();
 
         auto a = root->get("a");
@@ -44,7 +44,7 @@ void test_object(void **state) {
         assert_throws(liblc::ConfigccKeyNotFound, {root->get("d");});
     }
     {
-        liblc::ConfigParser parser("[1 2 3]");
+        liblc::ConfigParser parser("[1, 2, 3]");
         auto root = parser.parse();
 
         assert_int_equal(root->get(0)->toNumber(), 1);
@@ -291,28 +291,28 @@ void test_configcc_scanner_failure(void **state) {
 
 void test_configcc(void **state) {
     // parse from string back to string
-    test_parser_full("{x=10 pi=3.1415}", "{\"pi\"=3.1415 \"x\"=10}");
+    test_parser_full("{x=10, pi=3.1415}", "{\"pi\"=3.1415, \"x\"=10}");
 
     test_parser_full("10", "10");
 
-    test_parser_full("[10 20 30 40]", "[10 20 30 40]");
+    test_parser_full("[10, 20, 30, 40]", "[10, 20, 30, 40]");
 
     test_parser_full("", "{}");
 
     test_parser_full("{\n"
-            "hi='Hello'\n"
-            "w=\"World\"\n"
-            "array = [1 -2 +3.1 -4 -3.1415]\n"
+            "hi='Hello',\n"
+            "w=\"World\",\n"
+            "array = [1, -2, +3.1, -4, -3.1415],\n"
             "section = {\n"
-                    "a = 3.14\n"
-                    "b = true\n"
-                    "c = nil\n"
-                    "d = false\n"
-                    "\"key str\"=\"test\""
+                    "a = 3.14,\n"
+                    "b = true,\n"
+                    "c = nil,\n"
+                    "d = false,\n"
+                    "\"key str\"=\"test\","
                 "}\n"
             "}"
-            , "{\"array\"=[1 -2 3.1 -4 -3.1415] \"hi\"=\"Hello\" "
-            "\"section\"={\"a\"=3.14 \"b\"=true \"c\"=nil \"d\"=false \"key str\"=\"test\"} \"w\"=\"World\"}");
+            , "{\"array\"=[1, -2, 3.1, -4, -3.1415], \"hi\"=\"Hello\", "
+            "\"section\"={\"a\"=3.14, \"b\"=true, \"c\"=nil, \"d\"=false, \"key str\"=\"test\"}, \"w\"=\"World\"}");
 }
 
 #define test_parser_error(input) {\
@@ -322,12 +322,14 @@ void test_configcc(void **state) {
 
 
 void test_configcc_failure(void **state) {
-    test_parser_error("{a=1");
-    test_parser_error("[a=1");
+    test_parser_error("{a=1,");
+    test_parser_error("[a=1,");
     test_parser_error("a=1]");
     test_parser_error("a=1}");
     test_parser_error("a=1");
-    test_parser_error("{a=1, b=2}");
+    // test_parser_error("{a=1, b=2}");
     test_parser_error("{a=null}");
     test_parser_error("1 2");
+    test_parser_error("{a=1 b=2}");
+    test_parser_error("[1 2]");
 }

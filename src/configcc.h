@@ -692,7 +692,7 @@ namespace liblc {
                 auto objList = obj->toList();
                 for (auto it = objList->begin(); it != objList->end(); it++) {
                     if (it != objList->begin()) {
-                        stream << ' ';
+                        stream << ", ";
                     }
                     stream << stringify(*it);
                 }
@@ -706,7 +706,7 @@ namespace liblc {
                 auto objMap = obj->toSection();
                 for (auto it = objMap->begin(); it != objMap->end(); it++) {
                     if (it != objMap->begin()) {
-                        stream << ' ';
+                        stream << ", ";
                     }
                     stream << '"' << it->first << '"' << '=';
                     stream << stringify(it->second);
@@ -776,6 +776,10 @@ namespace liblc {
                     auto value = object();
 
                     addObjectToSection(value, keyName, root);
+
+                    if (!check(RIGHT_BRACE) || check(COMMA)) {
+                        consume(COMMA, EXPECTED_COMMA);
+                    }
                 }
 
                 consume(RIGHT_BRACE, MISSING_RIGHT_BRACE);
@@ -791,6 +795,9 @@ namespace liblc {
                 while (!check(RIGHT_BRACKET) && !isAtEnd()) {
                     auto value = object();
                     addObjectToList(value, root);
+                    if (!check(RIGHT_BRACKET) || check(COMMA)) {
+                        consume(COMMA, EXPECTED_COMMA);
+                    }
                 }
 
                 consume(RIGHT_BRACKET, MISSING_RIGHT_BRACKET);

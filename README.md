@@ -74,16 +74,16 @@ The configration files have a json-like format.
 
 ```
 {
-    string="Hello"
-    string2='World'
-    integer=1
-    real=3.1415
+    string="Hello",
+    string2='World',
+    integer=1,
+    real=3.1415,
     section = {
-        a=1
-        b=2
-        c=3
-    }
-    list=[1 2 3]
+        a=1,
+        b=2,
+        c=3,
+    },
+    list=[1, 2, 3],
     undefined=nil
 }
 ```
