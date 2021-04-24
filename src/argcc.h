@@ -115,6 +115,10 @@ namespace liblc {
                 return 0;
             }
 
+            int getSize() {
+                return values.size();
+            }
+
             std::vector<std::any>::iterator getValueBegin(std::string name) {
                 return values.find(name)->second.begin();
             }

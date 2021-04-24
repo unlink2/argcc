@@ -90,6 +90,8 @@ void test_argcc(void **state) {
         assert_cc_string_equal(a.toString("consumer"), std::string("consume"));
         assert_cc_string_equal(a.toString("consumer", 1), std::string("the"));
         assert_cc_string_equal(a.toString("consumer", 2), std::string("rest"));
+
+        assert_int_equal(a.getSize(), 10);
     }
 
     // test help command
