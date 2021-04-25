@@ -1,0 +1,7 @@
+#ifndef __LIBLC_CONFIG_H__
+#define __LIBLC_CONFIG_H__
+
+
+#undef __LIBLC_NAME__
+
+#endif
