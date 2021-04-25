@@ -39,9 +39,9 @@ ${CXXFLAGS=""}
 AC_PROG_CXX
 
 # make directories
-mkdir -p srcdir
-mkdir -p testdir
-mkdir -p frontdir
+mkdir -p $srcdir
+mkdir -p $testsdir
+mkdir -p $frontdir
 
 # check for programs
 define(CHECK,
