@@ -106,7 +106,7 @@ else
 fi
 
 # define header variables
-AC_DEFINE(__LIBLC_NAME__, [liblc])
+AC_DEFINE(__LIBLC_NAME__, ["liblc"])
 AC_CONFIG_HEADERS(["src/liblc_config.h":_config.h.in])
 
 AC_CONFIG_FILES([makefile])
